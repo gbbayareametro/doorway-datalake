@@ -5,4 +5,5 @@ env:
 phases:
 
   build:
+  commands:
       - cdk bootstrap aws://364076391763/us-west-1
