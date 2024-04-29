@@ -1,9 +1,7 @@
-
 version: 0.2
 env:
   shell: bash
 phases:
-
   build:
-  commands:
+    commands:
       - cdk bootstrap aws://364076391763/us-west-1
