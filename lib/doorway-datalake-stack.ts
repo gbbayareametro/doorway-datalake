@@ -11,6 +11,9 @@ export class DoorwayDatalakeStack extends cdk.Stack {
     const vpc = new ec2.Vpc(this, "temp-vpc", {
       ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
     })
+    const sg = new ec2.SecurityGroup(this, 'InboundPostgres', { vpc })
+    sg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.POSTGRES, "Allow PostgresPort")
+
     const instance = new rds.DatabaseInstance(this, "temp-rds", {
       engine: rds.DatabaseInstanceEngine.POSTGRES,
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.MICRO),
@@ -18,8 +21,12 @@ export class DoorwayDatalakeStack extends cdk.Stack {
       vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
-      }
+      },
+      securityGroups: [sg]
     })
+
+
+
 
 
 
