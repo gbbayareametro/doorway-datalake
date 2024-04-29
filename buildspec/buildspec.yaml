@@ -5,3 +5,8 @@ phases:
   install:
     commands:
       - npm install aws-cdk -g
+      - yarn install
+  build:
+    commands:
+      - yarn cdk synth
+      - yarn cdk deploy
