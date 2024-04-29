@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dms from 'aws-cdk-lib/aws-dms'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
+import * as rds from 'aws-cdk-lib/aws-rds'
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class DoorwayDatalakeStack extends cdk.Stack {
@@ -10,6 +11,16 @@ export class DoorwayDatalakeStack extends cdk.Stack {
     const vpc = new ec2.Vpc(this, "temp-vpc", {
       ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
     })
+    const instance = new rds.DatabaseInstance(this, "temp-rds", {
+      engine: rds.DatabaseInstanceEngine.POSTGRES,
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.MICRO),
+      credentials: rds.Credentials.fromGeneratedSecret('syscdk'),
+      vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
+      }
+    })
+
 
 
   }
