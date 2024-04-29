@@ -4,4 +4,5 @@ env:
 phases:
   build:
     commands:
+      - npm install aws-cdk -g
       - cdk bootstrap aws://364076391763/us-west-1
