@@ -9,4 +9,4 @@ phases:
   build:
     commands:
       - yarn cdk synth
-      - yarn cdk deploy
+      - yarn cdk deploy --require-aproval never
