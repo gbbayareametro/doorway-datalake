@@ -63,4 +63,3 @@
     "@aws-cdk/aws-eks:nodegroupNameAttribute": true
   }
 }
-
