@@ -14,14 +14,14 @@ test("RDS Database Created", () => {
     DBInstanceClass: "db.t3.micro",
   });
 });
-// test("Lambda Created", () => {
-//   const app = new cdk.App();
-//   // WHEN
-//   const stack = new DoorwayDatalake.DoorwayDatalakeStack(
-//     app,
-//     "LambdaTestStack",
-//   );
-//   // THEN
-//   const template = Template.fromStack(stack);
-//   template.hasResourceProperties("AWS::Lambda::Function", {});
-// });
+test("Lambda Created", () => {
+  const app = new cdk.App();
+  // WHEN
+  const stack = new DoorwayDatalake.DoorwayDatalakeStack(
+    app,
+    "LambdaTestStack",
+  );
+  // THEN
+  const template = Template.fromStack(stack);
+  template.hasResourceProperties("AWS::Lambda::Function", {});
+});

@@ -1,1 +1,3 @@
-console.log("Hello World!!!!");
+export function handler() {
+    console.log("Hello World!!!!")
+}
