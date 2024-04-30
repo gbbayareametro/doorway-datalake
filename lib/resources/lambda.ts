@@ -31,7 +31,7 @@ export class LambdaInstance {
     const my_lambda = new lambda.Function(this.scope, name, {
       codeSigningConfig,
       runtime: lambda.Runtime.NODEJS_18_X,
-      handler: "insert-db.handler",
+      handler: "handler",
       code: lambda.Code.fromAsset(path.join(__dirname, "lambda")),
     });
     return my_lambda;
