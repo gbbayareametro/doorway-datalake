@@ -1,6 +1,7 @@
 import * as cdk from "aws-cdk-lib";
-import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as lambda from "aws-cdk-lib/aws-lambda-nodejs";
 import * as signer from "aws-cdk-lib/aws-signer";
+
 import * as path from "path";
 export class LambdaInstance {
   scope: cdk.Stack;
@@ -20,19 +21,24 @@ export class LambdaInstance {
       },
     );
 
-    const codeSigningConfig = new lambda.CodeSigningConfig(
-      this.scope,
-      "CodeSigningConfig",
-      {
-        signingProfiles: [signingProfile],
-      },
-    );
-
-    const my_lambda = new lambda.Function(this.scope, name, {
-      codeSigningConfig,
-      runtime: lambda.Runtime.NODEJS_18_X,
+    const my_lambda = new lambda.NodejsFunction(this.scope, name, {
       handler: "insert-db.handler",
-      code: lambda.Code.fromAsset('lib/resources/lambda/'),
+      entry: "./lib/resources/lambda/insert-db.ts",
+      bundling: {
+        commandHooks: {
+          beforeBundling(inputDir: string, outputDir: string): string[] {
+            return [`cp ${inputDir}/.env ${outputDir}`];
+          },
+          afterBundling(inputDir: string, outputDir: string): string[] {
+            return [];
+          },
+          beforeInstall() {
+            return [];
+          },
+          // ...
+        },
+        // ...
+      },
     });
     return my_lambda;
   }
