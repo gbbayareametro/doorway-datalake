@@ -8,5 +8,6 @@ phases:
       - yarn install
   build:
     commands:
+      - yarn build
       - yarn cdk synth
-      - yarn cdk deploy --require-aproval never
+      - yarn cdk deploy
