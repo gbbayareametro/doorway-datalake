@@ -7,6 +7,7 @@ export class RDSDBInstance {
     scope: cdk.Stack
     id: string
     props?: cdk.StackProps
+    vpc?: ec2.Vpc
     constructor(scope: cdk.Stack, id: string, props?: cdk.StackProps) {
         this.scope = scope
         this.id = id
@@ -14,6 +15,7 @@ export class RDSDBInstance {
     }
     create(name: string) {
         const vpc = new VpcInstance(this.scope, name, this.props).create(`${name}-vpc`)
+        this.vpc=vpc
         const sg = new ec2.SecurityGroup(this.scope, `${this.id}-InboundPostgres`, { vpc })
         sg.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.POSTGRES, "Allow PostgresPort")
 
@@ -27,7 +29,7 @@ export class RDSDBInstance {
             },
             securityGroups: [sg]
         })
-        return [instance,vpc]
+        return instance
 
     }
 

@@ -1,5 +1,5 @@
 import * as cdk from "aws-cdk-lib";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
+import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
 import * as lambda from "aws-cdk-lib/aws-lambda-nodejs";
 import * as signer from "aws-cdk-lib/aws-signer";
 
@@ -13,7 +13,7 @@ export class LambdaInstance {
     this.id = id;
     this.props = props;
   }
-  create(name: string,vpc: Vpc) {
+  create(name: string,vpc:IVpc) {
     const signingProfile = new signer.SigningProfile(
       this.scope,
       "SigningProfile",
