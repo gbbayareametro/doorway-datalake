@@ -18,7 +18,6 @@ phases:
     commands:
       - export DATABASE_URL="postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}:5432"
       - echo "DATABASE_URL=${DATABASE_URL}" >> .env
-      - createdb test
       - yarn build
       - yarn prisma migrate dev --name init
       - yarn cdk synth
