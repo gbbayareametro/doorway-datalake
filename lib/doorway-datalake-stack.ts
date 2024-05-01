@@ -10,7 +10,7 @@ import { LambdaInstance } from "./resources/lambda";
 export class DoorwayDatalakeStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
-    const db = new RDSDBInstance(this, id, props).create(`${id}-db`);
-    const lambda = new LambdaInstance(this, id, props).create(`${id}-lambda`);
+    const [db,vpc] = new RDSDBInstance(this, id, props).create(`${id}-db`);
+    const lambda = new LambdaInstance(this, id, props).create(`${id}-lambda`,vpc);
   }
 }

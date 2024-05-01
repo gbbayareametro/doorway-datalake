@@ -1,4 +1,5 @@
 import * as cdk from "aws-cdk-lib";
+import { Vpc } from "aws-cdk-lib/aws-ec2";
 import * as lambda from "aws-cdk-lib/aws-lambda-nodejs";
 import * as signer from "aws-cdk-lib/aws-signer";
 
@@ -12,7 +13,7 @@ export class LambdaInstance {
     this.id = id;
     this.props = props;
   }
-  create(name: string) {
+  create(name: string,vpc: Vpc) {
     const signingProfile = new signer.SigningProfile(
       this.scope,
       "SigningProfile",
@@ -22,8 +23,9 @@ export class LambdaInstance {
     );
 
     const my_lambda = new lambda.NodejsFunction(this.scope, name, {
-      handler: "insert-db.handler",
+      handler: "handler",
       entry: "./lib/resources/lambda/insert-db.ts",
+      vpc: vpc,
       bundling: {
         commandHooks: {
           beforeBundling(inputDir: string, outputDir: string): string[] {

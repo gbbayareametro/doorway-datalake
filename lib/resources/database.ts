@@ -27,7 +27,7 @@ export class RDSDBInstance {
             },
             securityGroups: [sg]
         })
-        return instance
+        return [instance,vpc]
 
     }
 
