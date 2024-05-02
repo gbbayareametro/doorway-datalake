@@ -3,8 +3,20 @@ import { PrismaClient } from "@prisma/client";
 
 export const handler: Handler = async (event, context) => {
   const prisma = new PrismaClient();
+  listingInsert(prisma).then(async() => {
+    await prisma.$disconnect()
+  })
+  getListings(prisma).then(async() => {
+    await prisma.$disconnect()
+  })
 
-  const listing1 = prisma.listing.create({
+  console.log("EVENT: \n" + JSON.stringify(event, null, 2));
+  return context.logStreamName;
+};
+async function listingInsert(prisma: PrismaClient) {
+
+
+  const listing1 = await prisma.listing.create({
     data: {
       address: "123 main st.",
       city: "Chicago",
@@ -12,7 +24,11 @@ export const handler: Handler = async (event, context) => {
       zip: "60640",
     },
   });
+  console.log(listing1)
 
-  console.log("EVENT: \n" + JSON.stringify(event, null, 2));
-  return context.logStreamName;
-};
+}
+async function getListings(prisma: PrismaClient) {
+  const listings = await prisma.listing.findMany()
+  console.log(listings)
+
+}
