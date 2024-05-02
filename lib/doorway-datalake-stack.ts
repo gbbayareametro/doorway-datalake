@@ -1,9 +1,8 @@
 import { Stack, StackProps } from "aws-cdk-lib";
 
 import { Construct } from "constructs";
-import { RDSDBInstance } from "../../doorway-test-db/lib/resources/database";
 import { LambdaInstance } from "./resources/lambda";
-import { VpcInstance } from "../../doorway-test-db/lib/resources/vpc";
+
 import { Vpc } from "aws-cdk-lib/aws-ec2";
 
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
