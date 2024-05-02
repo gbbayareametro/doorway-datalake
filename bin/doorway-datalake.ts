@@ -1,10 +1,17 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { DoorwayDatalakeStack } from '../lib/doorway-datalake-lambda-stack';
+import { DataLakeLambdaStack } from '../lib/doorway-datalake-lambda-stack';
+
+const env = {
+  account: process.env.CDK_DEFAULT_ACCOUNT,
+  region: process.env.CDK_DEFAULT_REGION,
+};
+
 
 const app = new cdk.App();
-new DoorwayDatalakeStack(app, 'DoorwayDatalakeStack', {
+new DataLakeLambdaStack(app, 'DataLakeLambdaStack', {
+  env:env
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
