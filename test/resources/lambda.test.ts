@@ -3,8 +3,6 @@ import * as ec2 from "aws-cdk-lib/aws-ec2"
 import { assert } from "console";
 import { LambdaInstance } from "../../lib/resources/lambda";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import { VpcInstance } from "../../../doorway-test-db/lib/resources/vpc";
-
 test("Lambda Created", () => {
   const stack = new cdk.Stack();
   const id = "test-id";
