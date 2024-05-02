@@ -16,6 +16,7 @@ test("RDS Database Created", () => {
 });
 test("Lambda Created", () => {
   const app = new cdk.App();
+
   // WHEN
   const stack = new DoorwayDatalake.DoorwayDatalakeStack(
     app,

@@ -13,7 +13,7 @@ export class LambdaInstance {
     this.id = id;
     this.props = props;
   }
-  create(name: string,vpc:IVpc) {
+  create(name: string, vpc: IVpc) {
     const signingProfile = new signer.SigningProfile(
       this.scope,
       "SigningProfile",
