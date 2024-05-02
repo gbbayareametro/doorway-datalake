@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { DoorwayDatalakeStack } from '../lib/doorway-datalake-stack';
+import { DoorwayDatalakeStack } from '../lib/doorway-datalake-lambda-stack';
 
 const app = new cdk.App();
 new DoorwayDatalakeStack(app, 'DoorwayDatalakeStack', {
