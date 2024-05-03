@@ -16,6 +16,6 @@ new DataLakeLambdaStack(app, 'DataLakeLambdaStack', {
   env:env
 });
 new DmsVpcRoleStack(app, 'DmsVpcRoleStack');
-new DataLakeDMSStack(app, 'DataLakeLambdaStack', {
+new DataLakeDMSStack(app, 'DataLakeDMSStack', {
   env:env
 });
