@@ -87,11 +87,9 @@ export class DataLakeDMSStack extends Stack {
         computeConfig: computeConfig,
         replicationConfigIdentifier: 'TestReplication',
         replicationType: ReplicationTypes.FULL_LOAD_AND_CDC,
-        sourceEndpointArn: sourceEndpoint.endpointIdentifier,
+        sourceEndpointArn: sourceEndpoint.ref,
         tableMappings: tableMappings.format(),
-        targetEndpointArn: targetEndpoint.endpointIdentifier
-
-      }
+        targetEndpointArn: targetEndpoint.ref     }
     );
   }
 }
