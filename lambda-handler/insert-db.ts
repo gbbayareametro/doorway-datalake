@@ -3,14 +3,9 @@ import { PrismaClient } from "@prisma/client";
 
 export const handler: Handler = async (event, context) => {
   const prisma = new PrismaClient();
-  await listingInsert(prisma).then(async() => {
-    await prisma.$disconnect()
-  })
+  await listingInsert(prisma)
   console.log("I GOT HERE!!!!!!")
-  await getListings(prisma).then(async() => {
-    await prisma.$disconnect()
-  })
-
+  await getListings(prisma)
   return context.logStreamName;
 };
 async function listingInsert(prisma: PrismaClient) {
