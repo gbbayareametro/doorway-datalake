@@ -21,7 +21,8 @@ export class LambdaInstance {
     const my_lambda = new lambda.Function(this.scope, "insert-db", {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'insert-db.handler',
-      code: lambda.Code.fromAsset('./lambda-handler')
+      code: lambda.Code.fromAsset('./lambda-handler'),
+      vpc: vpc
 
     })
     return my_lambda;
