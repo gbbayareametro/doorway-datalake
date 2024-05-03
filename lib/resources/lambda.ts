@@ -17,34 +17,10 @@ export class LambdaInstance {
     this.props = props;
   }
   create(name: string, vpc: IVpc) {
-    const signingProfile = new signer.SigningProfile(
-      this.scope,
-      "SigningProfile",
-      {
-        platform: signer.Platform.AWS_LAMBDA_SHA384_ECDSA,
-      },
-    );
-
     const my_lambda = new lambda.NodejsFunction(this.scope, name, {
-      handler: "handler",
-      entry: "./lib/resources/lambda/insert-db.ts",
+      handler: "insert-db.handler",
+      projectRoot: './lambda-handler',
       vpc: vpc,
-      bundling: {
-        commandHooks: {
-          beforeBundling(inputDir: string, outputDir: string): string[] {
-            return [`cp ${inputDir}/.env ${outputDir}`,
-            `cp -R ${inputDir}/prisma ${outputDir}` , `cp -R ${inputDir}/node_modules ${outputDir}`];
-          },
-          afterBundling(inputDir: string, outputDir: string): string[] {
-            return [];
-          },
-          beforeInstall() {
-            return [];
-          },
-          // ...
-        },
-        // ...
-      },
     });
     return my_lambda;
   }
