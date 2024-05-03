@@ -6,6 +6,7 @@ export const handler: Handler = async (event, context) => {
   await listingInsert(prisma).then(async() => {
     await prisma.$disconnect()
   })
+  console.log("I GOT HERE!!!!!!")
   await getListings(prisma).then(async() => {
     await prisma.$disconnect()
   })
