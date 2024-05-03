@@ -32,7 +32,8 @@ export class LambdaInstance {
       bundling: {
         commandHooks: {
           beforeBundling(inputDir: string, outputDir: string): string[] {
-            return [`cp ${inputDir}/.env ${outputDir}`];
+            return [`cp ${inputDir}/.env ${outputDir}`,
+            `cp -R ${inputDir}/prisma ${outputDir}` ];
           },
           afterBundling(inputDir: string, outputDir: string): string[] {
             return [];
