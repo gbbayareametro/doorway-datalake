@@ -24,4 +24,4 @@ phases:
       - yarn prisma migrate dev --name init
       - cd ..
       - yarn cdk synth
-      - yarn cdk deploy
+      - yarn cdk deploy --all
