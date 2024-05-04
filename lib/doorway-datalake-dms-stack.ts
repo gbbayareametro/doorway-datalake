@@ -11,6 +11,7 @@ import {
   CapacityUnits,
   EndpointType,
   PostgreSQLEndpoint,
+  Postgres2S3,
   ReplicationTypes,
   S3TargetEndpoint,
   SelectionAction,
@@ -26,14 +27,14 @@ export class DataLakeDMSStack extends Stack {
         "arn:aws:secretsmanager:us-east-2:364076391763:secret:DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb-D6p5UJ",
     });
 
-    const sourceEndpoint = new PostgreSQLEndpoint(this, "SourceEndpoint", {
-      endpointType: EndpointType.SOURCE,
-      databaseName: "test",
-      endpointIdentifier: "pgEndpoint",
-      postgresEndpointSettings: {
-        secretsManagerSecretId: secret.secretArn,
-      },
-    });
+    // const sourceEndpoint = new PostgreSQLEndpoint(this, "SourceEndpoint", {
+    //   endpointType: EndpointType.SOURCE,
+    //   databaseName: "test",
+    //   endpointIdentifier: "pgEndpoint",
+    //   postgresEndpointSettings: {
+    //     secretsManagerSecretId: secret.secretArn,
+    //   },
+    // });
     const replicationSubnetGroup = new dms.CfnReplicationSubnetGroup(
       this,
       "ReplicationSubnetGroup",
@@ -76,20 +77,34 @@ export class DataLakeDMSStack extends Stack {
       versioned: false,
       removalPolicy: RemovalPolicy.DESTROY,
     });
-    const targetEndpoint = new S3TargetEndpoint(this,"testTargetEndpoint", {
-        bucketArn: replicationBucket.bucketArn
+    // const targetEndpoint = new S3TargetEndpoint(this,"testTargetEndpoint", {
+    //     bucketArn: replicationBucket.bucketArn
 
-    });
-    const replicationConfig = new dms.CfnReplicationConfig(
-      this,
-      "TestReplication",
-      {
+    // });
+    // const replicationConfig = new dms.CfnReplicationConfig(
+    //   this,
+    //   "TestReplication",
+    //   {
+    //     computeConfig: computeConfig,
+    //     replicationConfigIdentifier: 'TestReplication',
+    //     replicationType: ReplicationTypes.FULL_LOAD_AND_CDC,
+    //     sourceEndpointArn: sourceEndpoint.ref,
+    //     tableMappings: tableMappings.format(),
+    //     targetEndpointArn: targetEndpoint.ref     }
+    // );
+    const postgres2s3 = new Postgres2S3(this,'Postgres2S3-test',{
+        bucketArn: replicationBucket.bucketArn,
+        databaseName: 'test',
+        postgresEndpointSettings:  {
+            secretsManagerSecretId: secret.secretArn,
+          },
+        tableMappings: tableMappings,
+        replicationConfigIdentifier: "TestReplication",
         computeConfig: computeConfig,
-        replicationConfigIdentifier: 'TestReplication',
-        replicationType: ReplicationTypes.FULL_LOAD_AND_CDC,
-        sourceEndpointArn: sourceEndpoint.ref,
-        tableMappings: tableMappings.format(),
-        targetEndpointArn: targetEndpoint.ref     }
-    );
+
+
+
+
+    })
   }
 }
