@@ -6,29 +6,23 @@ import {
 import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { DatabaseSecret } from "aws-cdk-lib/aws-rds";
 import { Construct } from "constructs";
-import * as ssm from 'aws-cdk-lib/aws-ssm'
 
 export class DataLakeDMSStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     const secret = DatabaseSecret.fromSecretAttributes(this, "secret", {
       secretCompleteArn:
-      ssm.StringParameter.fromStringParameterName(this, 'dbSecret', '/doorway/testdb/dbSecret').stringValue,
+        "arn:aws:secretsmanager:us-east-2:364076391763:secret:DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb-D6p5UJ",
     });
-    const vpcId = cdk.Fn.importValue("vpcId");
-    const vpc = Vpc.fromVpcAttributes(this, "Vpc", {
-      vpcId:  ssm.StringParameter.fromStringParameterName(this, 'vpcId', '/doorway/testdb/vpcId').stringValue,
-      availabilityZones: this.availabilityZones
-    })
-    const subnetIds: string[] = [];
+    const privateSubnets = cdk.Fn.importValue("privateSubnets");
 
-    vpc.publicSubnets.forEach((subnet) => subnetIds.push(subnet.subnetId));
+
 
     const replicationSubnetGroup = new CfnReplicationSubnetGroup(
       this,
       "ReplicationSubnets",
       {
-        subnetIds: subnetIds,
+        subnetIds: privateSubnets.split(','),
         replicationSubnetGroupDescription: 'Subnets used by DMS instance',
         replicationSubnetGroupIdentifier: 'DMSSubnets'
       },
