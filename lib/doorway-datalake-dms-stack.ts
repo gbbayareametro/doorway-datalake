@@ -15,8 +15,9 @@ export class DataLakeDMSStack extends cdk.Stack {
         "arn:aws:secretsmanager:us-east-2:364076391763:secret:DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb-D6p5UJ",
     });
     const vpcId = cdk.Fn.importValue("vpcId");
-    const vpc = Vpc.fromLookup(this, "Vpc", {
+    const vpc = Vpc.fromVpcAttributes(this, "Vpc", {
       vpcId: vpcId,
+      availabilityZones: this.availabilityZones
     });
     const subnetIds: string[] = [];
     vpc.privateSubnets.forEach((subnet) => subnetIds.push(subnet.subnetId));
