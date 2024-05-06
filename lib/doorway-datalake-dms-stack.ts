@@ -13,11 +13,11 @@ export class DataLakeDMSStack extends cdk.Stack {
     super(scope, id, props);
     const secret = DatabaseSecret.fromSecretAttributes(this, "secret", {
       secretCompleteArn:
-      ssm.StringParameter.fromStringParameterName(this, 'VpcId', '/doorway/testdb/dbSecret').stringValue,
+      ssm.StringParameter.fromStringParameterName(this, 'dbSecret', '/doorway/testdb/dbSecret').stringValue,
     });
     const vpcId = cdk.Fn.importValue("vpcId");
     const vpc = Vpc.fromLookup(this, "Vpc", {
-      vpcId:  ssm.StringParameter.fromStringParameterName(this, 'myVpcId', '/doorway/testdb/vpcId').stringValue
+      vpcId:  ssm.StringParameter.fromStringParameterName(this, 'vpcId', '/doorway/testdb/vpcId').stringValue
     })
     const subnetIds: string[] = [];
 
