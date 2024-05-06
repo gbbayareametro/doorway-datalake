@@ -17,7 +17,7 @@ export class DataLakeDMSStack extends cdk.Stack {
     });
     const vpcId = cdk.Fn.importValue("vpcId");
     const vpc = Vpc.fromLookup(this, "Vpc", {
-      vpcId:  ssm.StringParameter.fromStringParameterName(this, 'VpcId', '/doorway/testdb/vpcId').stringValue
+      vpcId:  ssm.StringParameter.fromStringParameterName(this, 'myVpcId', '/doorway/testdb/vpcId').stringValue
     })
     const subnetIds: string[] = [];
 
