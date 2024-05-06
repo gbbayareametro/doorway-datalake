@@ -6,21 +6,22 @@ import {
 import { Vpc } from "aws-cdk-lib/aws-ec2";
 import { DatabaseSecret } from "aws-cdk-lib/aws-rds";
 import { Construct } from "constructs";
+import * as ssm from 'aws-cdk-lib/aws-ssm'
 
 export class DataLakeDMSStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     const secret = DatabaseSecret.fromSecretAttributes(this, "secret", {
       secretCompleteArn:
-        "arn:aws:secretsmanager:us-east-2:364076391763:secret:DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb-D6p5UJ",
+      ssm.StringParameter.fromStringParameterName(this, 'VpcId', '/doorway/testdb/dbSecret').stringValue,
     });
     const vpcId = cdk.Fn.importValue("vpcId");
-    const vpc = Vpc.fromVpcAttributes(this, "Vpc", {
-      vpcId: vpcId,
-      availabilityZones: this.availabilityZones
-    });
+    const vpc = Vpc.fromLookup(this, "Vpc", {
+      vpcId:  ssm.StringParameter.fromStringParameterName(this, 'VpcId', '/doorway/testdb/vpcId').stringValue
+    })
     const subnetIds: string[] = [];
-    vpc.privateSubnets.forEach((subnet) => subnetIds.push(subnet.subnetId));
+
+    vpc.publicSubnets.forEach((subnet) => subnetIds.push(subnet.subnetId));
 
     const replicationSubnetGroup = new CfnReplicationSubnetGroup(
       this,
