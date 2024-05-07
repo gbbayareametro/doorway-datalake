@@ -1,4 +1,4 @@
-import { Stack, StackProps } from "aws-cdk-lib";
+import { Stack, StackProps, Fn } from "aws-cdk-lib";
 
 import { Construct } from "constructs";
 import { LambdaInstance } from "./resources/lambda";
@@ -11,7 +11,7 @@ export class DataLakeLambdaStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
     const vpc = Vpc.fromLookup(this, "VPC", {
-      vpcId: "vpc-0533af7fdb40791a7",
+      vpcId: Fn.importValue('vpcId'),
     });
     const lambda = new LambdaInstance(this, id, props).create(
       `${id}-lambda`,

@@ -4,9 +4,9 @@ env:
   variables:
     PGDATABASE: test
   secrets-manager:
-    PGUSER: DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb:username
-    PGPASSWORD: DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb:password
-    PGHOST: DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb:host
+    PGUSER: DoorwayTestDbStackSecretCC3-NG0UvL8EFjR8:username
+    PGPASSWORD: DoorwayTestDbStackSecretCC3-NG0UvL8EFjR8:password
+    PGHOST: DoorwayTestDbStackSecretCC3-NG0UvL8EFjR8:host
 
 phases:
   install:

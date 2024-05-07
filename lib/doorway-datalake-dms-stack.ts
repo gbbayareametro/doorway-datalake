@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as dms from 'aws-cdk-lib/aws-dms';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
+
 import { DatabaseSecret } from 'aws-cdk-lib/aws-rds';
 import { Construct } from 'constructs';
 interface DMSStackProps extends cdk.StackProps {
@@ -10,10 +11,7 @@ interface DMSStackProps extends cdk.StackProps {
 export class DataLakeDMSStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: DMSStackProps) {
     super(scope, id, props);
-    const secret = DatabaseSecret.fromSecretAttributes(this, 'secret', {
-      secretCompleteArn:
-        'arn:aws:secretsmanager:us-east-2:364076391763:secret:DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb-D6p5UJ'
-    });
+    const secret = DatabaseSecret.fromSecretNameV2(this,'DatabaseSecret',cdk.Fn.importValue('dbSecret'))
 
     const replicationInstance = new dms.CfnReplicationInstance(
       this,
@@ -46,16 +44,18 @@ export class DataLakeDMSStack extends cdk.Stack {
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         resources: [secret.secretArn],
-        actions: ['iam:PassRole']
+        actions: ['iam:PassRole', 'secretsmanager:getSecretValue']
       })
     );
+
     const postgresEndpoint = new dms.CfnEndpoint(this, 'postgresEndpoint', {
+      sslMode: 'require',
       endpointType: 'source',
       engineName: 'postgres',
-      databaseName: 'test',
+      databaseName: 'postgres',
       postgreSqlSettings: {
         secretsManagerSecretId: secret.secretName,
-        secretsManagerAccessRoleArn: serviceRole.roleArn,
+        secretsManagerAccessRoleArn: serviceRole.roleArn
       }
     });
     const s3Endpoint = new dms.CfnEndpoint(this, 'outputBucketEndpoint', {
@@ -95,7 +95,8 @@ export class DataLakeDMSStack extends cdk.Stack {
       replicationInstanceArn: replicationInstance.ref,
       sourceEndpointArn: postgresEndpoint.ref,
       targetEndpointArn: s3Endpoint.ref,
-      tableMappings: JSON.stringify(tableMappings)
+      tableMappings: JSON.stringify(tableMappings),
+
     });
   }
 }
