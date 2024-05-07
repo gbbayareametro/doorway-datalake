@@ -1,32 +1,99 @@
-import * as cdk from "aws-cdk-lib";
-import {
-  CfnReplicationInstance,
-  CfnReplicationSubnetGroup,
-} from "aws-cdk-lib/aws-dms";
-import { Vpc } from "aws-cdk-lib/aws-ec2";
-import { DatabaseSecret } from "aws-cdk-lib/aws-rds";
-import { Construct } from "constructs";
+import * as cdk from 'aws-cdk-lib';
+import * as dms from 'aws-cdk-lib/aws-dms';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import { DatabaseSecret } from 'aws-cdk-lib/aws-rds';
+import { Construct } from 'constructs';
 interface DMSStackProps extends cdk.StackProps {
-  replicationSubnetGroup: CfnReplicationSubnetGroup;
+  replicationSubnetGroup: dms.CfnReplicationSubnetGroup;
 }
 export class DataLakeDMSStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: DMSStackProps) {
     super(scope, id, props);
-    const secret = DatabaseSecret.fromSecretAttributes(this, "secret", {
+    const secret = DatabaseSecret.fromSecretAttributes(this, 'secret', {
       secretCompleteArn:
-        "arn:aws:secretsmanager:us-east-2:364076391763:secret:DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb-D6p5UJ",
+        'arn:aws:secretsmanager:us-east-2:364076391763:secret:DoorwayTestDbStackSecretCC3-dUp1tGcD6zhb-D6p5UJ'
     });
 
-    const replicationInstance = new CfnReplicationInstance(
+    const replicationInstance = new dms.CfnReplicationInstance(
       this,
-      "ReplicationInstance",
+      'ReplicationInstance',
       {
-        replicationInstanceClass: "dms.t2.micro",
+        replicationInstanceClass: 'dms.t2.micro',
         publiclyAccessible: false,
-        vpcSecurityGroupIds: ["sg-023f8c31e23696e1c"],
+        vpcSecurityGroupIds: ['sg-023f8c31e23696e1c'],
         replicationSubnetGroupIdentifier:
-          props.replicationSubnetGroup.replicationSubnetGroupIdentifier,
-      },
+          props.replicationSubnetGroup.replicationSubnetGroupIdentifier
+      }
     );
+    const outputBucket = new s3.Bucket(this, 'outputBucket', {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      versioned: false,
+      removalPolicy: cdk.RemovalPolicy.RETAIN
+    });
+    const serviceRole = new iam.Role(this, 'DMSServiceWriteRole', {
+      assumedBy: new iam.ServicePrincipal('dms.amazonaws.com')
+    });
+    serviceRole.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        resources: [outputBucket.bucketArn],
+        actions: ['s3.PutObject', 's3.GetObject', 's3.ListBucket']
+      })
+    );
+    serviceRole.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        resources: [secret.secretArn],
+        actions: ['iam:PassRole']
+      })
+    );
+    const postgresEndpoint = new dms.CfnEndpoint(this, 'postgresEndpoint', {
+      endpointType: 'source',
+      engineName: 'postgres',
+      postgreSqlSettings: {
+        secretsManagerSecretId: secret.secretName,
+        secretsManagerAccessRoleArn: serviceRole.roleArn
+      }
+    });
+    const s3Endpoint = new dms.CfnEndpoint(this, 'outputBucketEndpoint', {
+      endpointType: 'target',
+      engineName: 's3',
+      s3Settings: {
+        bucketName: outputBucket.bucketName
+      }
+    });
+    const tableMappings = {
+      rules: [
+        {
+          'rule-type': 'selection',
+          'rule-id': '1',
+          'rule-name': '1',
+          'object-locator': {
+            'schema-name': 'public',
+            'table-name': 'listings'
+          },
+          'rule-action': 'include'
+        },
+        {
+          'rule-type': 'selection',
+          'rule-id': '1',
+          'rule-name': '1',
+          'object-locator': {
+            'schema-name': 'public',
+            'table-name': 'applications'
+          },
+          'rule-action': 'include'
+        }
+      ]
+    };
+    const replicationTask = new dms.CfnReplicationTask(this, 'DoorwayDBCDC', {
+      migrationType: 'full-load-and-cdc',
+      replicationInstanceArn: replicationInstance.ref,
+      sourceEndpointArn: postgresEndpoint.ref,
+      targetEndpointArn: s3Endpoint.ref,
+      tableMappings: JSON.stringify(tableMappings)
+    });
   }
 }
