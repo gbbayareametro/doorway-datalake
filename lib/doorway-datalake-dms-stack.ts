@@ -52,9 +52,10 @@ export class DataLakeDMSStack extends cdk.Stack {
     const postgresEndpoint = new dms.CfnEndpoint(this, 'postgresEndpoint', {
       endpointType: 'source',
       engineName: 'postgres',
+      databaseName: 'test',
       postgreSqlSettings: {
         secretsManagerSecretId: secret.secretName,
-        secretsManagerAccessRoleArn: serviceRole.roleArn
+        secretsManagerAccessRoleArn: serviceRole.roleArn,
       }
     });
     const s3Endpoint = new dms.CfnEndpoint(this, 'outputBucketEndpoint', {
