@@ -33,7 +33,7 @@ export class DataLakeDMSStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.RETAIN
     });
     const serviceRole = new iam.Role(this, 'DMSServiceWriteRole', {
-      assumedBy: new iam.ServicePrincipal('dms.amazonaws.com')
+      assumedBy: new iam.ServicePrincipal('dms.us-east-2.amazonaws.com')
     });
     serviceRole.addToPolicy(
       new iam.PolicyStatement({
