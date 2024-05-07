@@ -62,7 +62,8 @@ export class DataLakeDMSStack extends cdk.Stack {
       endpointType: 'target',
       engineName: 's3',
       s3Settings: {
-        bucketName: outputBucket.bucketName
+        bucketName: outputBucket.bucketName,
+        serviceAccessRoleArn: serviceRole.roleArn
       }
     });
     const tableMappings = {
@@ -70,7 +71,7 @@ export class DataLakeDMSStack extends cdk.Stack {
         {
           'rule-type': 'selection',
           'rule-id': '1',
-          'rule-name': '1',
+          'rule-name': 'listingsTable',
           'object-locator': {
             'schema-name': 'public',
             'table-name': 'listings'
@@ -79,8 +80,8 @@ export class DataLakeDMSStack extends cdk.Stack {
         },
         {
           'rule-type': 'selection',
-          'rule-id': '1',
-          'rule-name': '1',
+          'rule-id': '2',
+          'rule-name': 'applicationsTable',
           'object-locator': {
             'schema-name': 'public',
             'table-name': 'applications'
