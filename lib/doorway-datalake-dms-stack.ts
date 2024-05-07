@@ -39,7 +39,7 @@ export class DataLakeDMSStack extends cdk.Stack {
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         resources: [outputBucket.bucketArn],
-        actions: ['s3.PutObject', 's3.GetObject', 's3.ListBucket']
+        actions: ['s3:PutObject', 's3:GetObject', 's3:ListBucket']
       })
     );
     serviceRole.addToPolicy(
