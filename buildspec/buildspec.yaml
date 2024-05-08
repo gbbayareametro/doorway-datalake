@@ -22,7 +22,7 @@ phases:
       - echo "DATABASE_URL=${DATABASE_URL}" >> .env
       - yarn install
       - yarn build
-      - yarn prisma migrate dev --name init
+      - yarn prisma migrate deploy --name init
       - cd ..
       - yarn cdk synth
       - yarn cdk deploy --all
