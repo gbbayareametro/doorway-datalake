@@ -56,7 +56,7 @@ export class DataLakeDMSStack extends cdk.Stack {
       sslMode: 'require',
       endpointType: 'source',
       engineName: 'postgres',
-      databaseName: 'postgres',
+      databaseName: 'test',
       postgreSqlSettings: {
         secretsManagerSecretId: secret.secretName,
         secretsManagerAccessRoleArn: serviceRole.roleArn
