@@ -24,21 +24,21 @@ async function listingInsert(prisma: PrismaClient) {
   const listings = await prisma.listing.findMany()
   const count = listings.length
   console.log(listings)
-  // for (let  i=0;i < 10; i++) {
-  //   const myListing = listings[Math.floor(Math.random()*count)]
-  //   const applicant = prisma.application.create({
-  //     data: {
-  //       demo1: 'abcd',
-  //       demo2: 'defg',
-  //       DOB: new Date('1967-2-4'),
-  //       listing: myListing
+  for (let  i=0;i < 10; i++) {
+    const myListing = listings[Math.floor(Math.random()*count)]
+    const applicant = prisma.application.create({
+      data: {
+        demo1: 'abcd',
+        demo2: 'defg',
+        DOB: new Date('1967-2-4'),
+        listingId: myListing.id
 
 
-  //     }
-  //   })
-  //   console.log(applicant)
+      }
+    })
+    console.log(applicant)
 
-  // }
+  }
 
 
 
