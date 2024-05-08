@@ -103,7 +103,8 @@ export class DataLakeDMSStack extends cdk.Stack {
 
     });
     new cdk.CfnOutput(this, 'DMSOutputBucket', {
-      value: outputBucket.bucketName
+      value: outputBucket.bucketName,
+      exportName: 'DMSOutputBucket'
 
     })
 
