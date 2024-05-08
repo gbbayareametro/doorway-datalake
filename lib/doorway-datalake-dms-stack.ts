@@ -11,7 +11,8 @@ interface DMSStackProps extends cdk.StackProps {
 export class DataLakeDMSStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: DMSStackProps) {
     super(scope, id, props);
-    const secret = DatabaseSecret.fromSecretNameV2(this,'DatabaseSecret',cdk.Fn.importValue('dbSecret'))
+    const secret = DatabaseSecret.fromSecretNameV2(this, 'DatabaseSecret', cdk.Fn.importValue('dbSecret'))
+
 
     const replicationInstance = new dms.CfnReplicationInstance(
       this,
@@ -19,20 +20,22 @@ export class DataLakeDMSStack extends cdk.Stack {
       {
         replicationInstanceClass: 'dms.t2.micro',
         publiclyAccessible: false,
-        vpcSecurityGroupIds: ['sg-023f8c31e23696e1c'],
+        vpcSecurityGroupIds: ['sg-0d34e6edb6d097c24'],
         replicationSubnetGroupIdentifier:
           props.replicationSubnetGroup.replicationSubnetGroupIdentifier
       }
     );
+    const serviceRole = new iam.Role(this, 'DMSServiceWriteRole', {
+      assumedBy: new iam.ServicePrincipal('dms.us-east-2.amazonaws.com')
+    });
     const outputBucket = new s3.Bucket(this, 'outputBucket', {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       encryption: s3.BucketEncryption.S3_MANAGED,
       versioned: false,
       removalPolicy: cdk.RemovalPolicy.RETAIN
     });
-    const serviceRole = new iam.Role(this, 'DMSServiceWriteRole', {
-      assumedBy: new iam.ServicePrincipal('dms.us-east-2.amazonaws.com')
-    });
+    outputBucket.grantReadWrite(serviceRole)
+
     serviceRole.addToPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
@@ -47,6 +50,7 @@ export class DataLakeDMSStack extends cdk.Stack {
         actions: ['iam:PassRole', 'secretsmanager:getSecretValue']
       })
     );
+    secret.grantRead(serviceRole)
 
     const postgresEndpoint = new dms.CfnEndpoint(this, 'postgresEndpoint', {
       sslMode: 'require',
@@ -98,5 +102,7 @@ export class DataLakeDMSStack extends cdk.Stack {
       tableMappings: JSON.stringify(tableMappings),
 
     });
+
+
   }
 }
