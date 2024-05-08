@@ -26,7 +26,7 @@ async function listingInsert(prisma: PrismaClient) {
   console.log(listings)
   for (let  i=0;i < 10; i++) {
     const myListing = listings[Math.floor(Math.random()*count)]
-    const applicant = prisma.application.create({
+    const applicant = await prisma.application.create({
       data: {
         demo1: 'abcd',
         demo2: 'defg',
