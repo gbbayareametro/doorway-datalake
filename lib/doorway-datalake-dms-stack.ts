@@ -102,6 +102,10 @@ export class DataLakeDMSStack extends cdk.Stack {
       tableMappings: JSON.stringify(tableMappings),
 
     });
+    new cdk.CfnOutput(this, 'DMSOutputBucket', {
+      value: outputBucket.bucketName
+
+    })
 
 
   }
