@@ -78,7 +78,7 @@ export class DataLakeDMSStack extends cdk.Stack {
           'rule-name': 'listingsTable',
           'object-locator': {
             'schema-name': 'public',
-            'table-name': 'listings'
+            'table-name': 'Listing'
           },
           'rule-action': 'include'
         },
@@ -88,7 +88,7 @@ export class DataLakeDMSStack extends cdk.Stack {
           'rule-name': 'applicationsTable',
           'object-locator': {
             'schema-name': 'public',
-            'table-name': 'applications'
+            'table-name': 'Application'
           },
           'rule-action': 'include'
         }
