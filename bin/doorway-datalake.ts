@@ -22,10 +22,11 @@ const subnetGroupStack = new DataLakeDMSSubnetGroupStack(
   'SubnetGroupStack'
 );
 
-new DataLakeDMSStack(app, 'DataLakeDMSStack', {
+const dmsStack = new DataLakeDMSStack(app, 'DataLakeDMSStack', {
   env: env,
   replicationSubnetGroup: subnetGroupStack.replicationSubnetGroup
 });
-new DataLakeETLStack(app, 'ETLStack', {
+const etlstack = new DataLakeETLStack(app, 'ETLStack', {
   env: env
 })
+etlstack.addDependency(dmsStack,'It needs the output bucket set up for DMS')
