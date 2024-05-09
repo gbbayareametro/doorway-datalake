@@ -65,9 +65,11 @@ export class DataLakeDMSStack extends cdk.Stack {
     const s3Endpoint = new dms.CfnEndpoint(this, 'outputBucketEndpoint', {
       endpointType: 'target',
       engineName: 's3',
+
       s3Settings: {
         bucketName: outputBucket.bucketName,
-        serviceAccessRoleArn: serviceRole.roleArn
+        serviceAccessRoleArn: serviceRole.roleArn,
+        addColumnName: true,
       }
     });
     const tableMappings = {
